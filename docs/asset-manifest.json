@@ -1,0 +1,138 @@
+[
+  {
+    "path": "public/assets/brand/icon-color.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "f88be3c29b7ed9f1"
+  },
+  {
+    "path": "public/assets/brand/icon-mono.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "272f02d17d9eef1c"
+  },
+  {
+    "path": "public/assets/brand/logo-horizontal.png",
+    "width": 2172,
+    "height": 724,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "7a3f4e437f477509"
+  },
+  {
+    "path": "public/assets/cards/assistance-24-7.png",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "e699eeec1631f9f5"
+  },
+  {
+    "path": "public/assets/cards/drive-calm.png",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "fa84e67393dd1f27"
+  },
+  {
+    "path": "public/assets/cards/immediate-assistance.png",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "7c56e6fdc5042473"
+  },
+  {
+    "path": "public/assets/cards/policy-at-hand.png",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "dc20cdd04408cf2a"
+  },
+  {
+    "path": "public/assets/hero/brand-arch.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "ac0ad123f7d81909"
+  },
+  {
+    "path": "public/assets/hero/car-sedan.png",
+    "width": 1122,
+    "height": 1402,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "004d294806d3621a"
+  },
+  {
+    "path": "public/assets/hero/podium.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "5b562ebfe338babb"
+  },
+  {
+    "path": "public/assets/hero/whatsapp-phone.png",
+    "width": 1122,
+    "height": 1402,
+    "mode": "RGBA",
+    "has_alpha": true,
+    "sha256": "340edec6e977ce58"
+  },
+  {
+    "path": "public/references/desktop/console-reference.png",
+    "width": 1672,
+    "height": 941,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "0c0fd1d8890a5312"
+  },
+  {
+    "path": "public/references/desktop/home-hero-reference.png",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "23d1d49fe3a3d7ca"
+  },
+  {
+    "path": "public/references/desktop/signup-reference.png",
+    "width": 1448,
+    "height": 1086,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "3bca876cf434ea71"
+  },
+  {
+    "path": "public/references/mobile/console-reference.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "2a2f3a7aa84b6858"
+  },
+  {
+    "path": "public/references/mobile/home-reference.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "8bd5deb3ecd64276"
+  },
+  {
+    "path": "public/references/mobile/signup-reference.png",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGB",
+    "has_alpha": false,
+    "sha256": "6df01fbef5d60883"
+  }
+]
