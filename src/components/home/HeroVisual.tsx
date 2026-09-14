@@ -8,7 +8,7 @@ function FloatingCard({ className, children }: FloatingCardProps) {
   return (
     <div
       className={cn(
-        "absolute z-10 hidden items-center rounded-2xl border border-white/80 bg-white/90 px-4 py-3 text-xs font-semibold text-aa-navy-900 shadow-[var(--aa-shadow-md)] backdrop-blur-sm sm:flex",
+        "aa-hero-card absolute z-10 hidden items-center rounded-2xl border border-white/80 bg-white/90 px-4 py-3 text-xs font-semibold text-aa-navy-900 shadow-[var(--aa-shadow-md)] backdrop-blur-sm sm:flex",
         className,
       )}
     >
@@ -26,7 +26,7 @@ export function HeroVisual() {
         fill
         priority
         sizes="(max-width: 1024px) 100vw, 56vw"
-        className="object-contain object-center"
+        className="aa-hero-arch object-contain object-center"
       />
       <Image
         src="/assets/hero/whatsapp-phone.png"
@@ -35,7 +35,7 @@ export function HeroVisual() {
         height={1402}
         priority
         sizes="(max-width: 640px) 62vw, (max-width: 1024px) 42vw, 27vw"
-        className="absolute right-[3%] top-[8%] z-[2] h-[76%] w-auto object-contain drop-shadow-[0_22px_30px_rgba(7,20,66,0.18)]"
+        className="aa-hero-phone absolute right-[3%] top-[8%] z-[2] h-[76%] w-auto object-contain drop-shadow-[0_22px_30px_rgba(7,20,66,0.18)]"
       />
       <Image
         src="/assets/hero/podium.png"
@@ -52,15 +52,15 @@ export function HeroVisual() {
         height={1402}
         priority
         sizes="(max-width: 640px) 82vw, (max-width: 1024px) 50vw, 33vw"
-        className="absolute bottom-[16%] left-[7%] z-[4] h-[44%] w-[79%] object-contain object-bottom"
+        className="aa-hero-car absolute bottom-[16%] left-[7%] z-[4] h-[44%] w-[79%] object-contain object-bottom"
       />
-      <FloatingCard className="left-[1%] top-[30%]">
+      <FloatingCard className="aa-hero-card-a left-[1%] top-[30%]">
         <FileText aria-hidden="true" className="mr-2 text-aa-blue-600" size={16} /> Póliza a la mano
       </FloatingCard>
-      <FloatingCard className="left-[5%] top-[48%]">
+      <FloatingCard className="aa-hero-card-b left-[5%] top-[48%]">
         <Bell aria-hidden="true" className="mr-2 text-aa-coral-500" size={16} /> Asistencia 24/7
       </FloatingCard>
-      <FloatingCard className="bottom-[9%] right-[-1%] max-w-[170px] text-center">
+      <FloatingCard className="aa-hero-card-b bottom-[9%] right-[-1%] max-w-[170px] text-center">
         <ShieldCheck aria-hidden="true" className="mr-2 shrink-0 text-aa-blue-600" size={17} />
         Conduce tranquilo, nosotros te respaldamos.
       </FloatingCard>
