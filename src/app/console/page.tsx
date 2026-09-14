@@ -1,88 +1,27 @@
-import Image from "next/image";
-import Link from "next/link";
-import {
-  Bell,
-  CarFront,
-  ChevronRight,
-  CircleHelp,
-  FileText,
-  LayoutDashboard,
-  LifeBuoy,
-  LogOut,
-  Menu,
-  MessageCircle,
-  MoreHorizontal,
-  Plus,
-  ShieldCheck,
-  Sparkles,
-  Wrench,
-} from "lucide-react";
+"use client";
+
+import { useMemo, useState } from "react";
+import { Bell, ChartNoAxesColumnIncreasing, ChevronRight, CircleHelp, FileText, Home, MessageSquare, MoreVertical, Search, Settings, ShieldCheck, Users, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Container } from "@/components/ui/Container";
-import { SurfaceCard } from "@/components/ui/SurfaceCard";
+import { Button } from "@/components/ui/Button";
 
-const navItems = [
-  { label: "Resumen", icon: LayoutDashboard, active: true },
-  { label: "Mi vehículo", icon: CarFront },
-  { label: "Documentos", icon: FileText },
-  { label: "Asistencia", icon: LifeBuoy },
+type Status = "active" | "expiring" | "expired";
+type User = { id: string; initials: string; name: string; city: string; insurer: string; vehicle: string; plate: string; expires: string; whatsapp: boolean; docs: "Completo" | "Pendiente"; status: Status; tone: string };
+const users: User[] = [
+  { id: "mariana", initials: "ML", name: "Mariana López", city: "CDMX", insurer: "Demo MX", vehicle: "Mazda CX-5 · 2023", plate: "ABC-123-D", expires: "31 dic 2026", whatsapp: true, docs: "Completo", status: "active", tone: "bg-red-50 text-red-600" },
+  { id: "alejandro", initials: "AR", name: "Alejandro Ríos", city: "Monterrey", insurer: "Protección Norte", vehicle: "Kia Seltos · 2022", plate: "DEF-456-G", expires: "18 jun 2027", whatsapp: true, docs: "Completo", status: "active", tone: "bg-blue-50 text-blue-600" },
+  { id: "sofia", initials: "SM", name: "Sofía Méndez", city: "Guadalajara", insurer: "Aseguradora Uno", vehicle: "Nissan Versa · 2024", plate: "GHI-789-H", expires: "04 feb 2027", whatsapp: true, docs: "Completo", status: "active", tone: "bg-orange-50 text-orange-600" },
+  { id: "carlos", initials: "CR", name: "Carlos Ramírez", city: "Puebla", insurer: "Qualitas", vehicle: "Toyota Corolla · 2021", plate: "JKL-321-M", expires: "12 ago 2026", whatsapp: true, docs: "Pendiente", status: "expiring", tone: "bg-violet-50 text-violet-600" },
+  { id: "laura", initials: "LG", name: "Laura Gómez", city: "León", insurer: "GNP Seguros", vehicle: "Honda HR-V · 2023", plate: "MNO-654-P", expires: "20 nov 2026", whatsapp: true, docs: "Completo", status: "active", tone: "bg-emerald-50 text-emerald-700" },
 ];
-
-const reminders = [
-  { title: "Verificación vehicular", date: "18 oct 2026", color: "bg-aa-coral-500" },
-  { title: "Renovación de póliza", date: "04 nov 2026", color: "bg-aa-blue-500" },
-];
+const nav = [{ label: "Inicio", icon: Home }, { label: "Consola", icon: ShieldCheck }, { label: "Usuarios", icon: Users }, { label: "Pólizas", icon: FileText }, { label: "Chats", icon: MessageSquare }, { label: "Reportes", icon: ChartNoAxesColumnIncreasing }, { label: "Configuración", icon: Settings }];
 
 export default function ConsolePage() {
-  return (
-    <main className="min-h-screen bg-aa-page text-aa-navy-950">
-      <div className="flex min-h-screen">
-        <aside className="hidden w-[258px] shrink-0 flex-col border-r border-aa-border bg-white px-5 py-7 lg:flex">
-          <BrandLogo width={164} priority className="px-2" />
-          <div className="mt-12 flex items-center gap-3 rounded-2xl bg-aa-surface-soft p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-aa-blue-600 text-sm font-bold text-white">MG</div>
-            <div className="min-w-0"><p className="truncate text-sm font-bold">María González</p><p className="text-xs text-aa-text-muted">Plan esencial</p></div>
-          </div>
-          <nav aria-label="Navegación de consola" className="mt-10 space-y-1">
-            {navItems.map(({ label, icon: Icon, active }) => (
-              <a key={label} href={`#${label.toLowerCase().replace(" ", "-")}`} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${active ? "bg-aa-navy-950 text-white shadow-[var(--aa-shadow-sm)]" : "text-aa-text-muted hover:bg-aa-surface-soft hover:text-aa-navy-950"}`}>
-                <Icon size={18} aria-hidden="true" /> {label}
-              </a>
-            ))}
-          </nav>
-          <div className="mt-auto space-y-1 border-t border-aa-border pt-5">
-            <a href="#ayuda" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-aa-text-muted hover:bg-aa-surface-soft"><CircleHelp size={18} /> Centro de ayuda</a>
-            <Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-aa-text-muted hover:bg-aa-surface-soft"><LogOut size={18} /> Salir</Link>
-          </div>
-        </aside>
-
-        <section className="min-w-0 flex-1">
-          <header className="border-b border-aa-border bg-white/90 backdrop-blur">
-            <Container className="flex h-[76px] items-center justify-between gap-4">
-              <div className="flex items-center gap-3 lg:hidden"><Menu size={22} /><BrandLogo width={138} /></div>
-              <div className="hidden lg:block"><p className="text-sm font-semibold text-aa-text-muted">Lunes, 14 de septiembre de 2026</p><h1 className="mt-1 font-display text-xl font-bold tracking-[-0.03em]">Hola, María <span aria-hidden="true">👋</span></h1></div>
-              <div className="flex items-center gap-3"><button type="button" aria-label="Notificaciones" className="relative flex h-10 w-10 items-center justify-center rounded-full text-aa-text-muted hover:bg-aa-surface-soft"><Bell size={19} /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-aa-coral-500" /></button><div className="flex h-10 w-10 items-center justify-center rounded-full bg-aa-blue-600 text-xs font-bold text-white lg:hidden">MG</div></div>
-            </Container>
-          </header>
-
-          <Container className="py-8 sm:py-10 lg:py-12">
-            <div className="mb-8 lg:hidden"><p className="text-sm font-semibold text-aa-text-muted">Lunes, 14 de septiembre de 2026</p><h1 className="mt-1 font-display text-2xl font-bold">Hola, María <span aria-hidden="true">👋</span></h1></div>
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-aa-blue-600">Tu resumen</p><h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] sm:text-4xl">Todo en orden</h2><p className="mt-2 text-base text-aa-text-muted">Esto es lo más importante de tu auto hoy.</p></div><button type="button" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-aa-border bg-white px-5 text-sm font-semibold text-aa-navy-900 shadow-[var(--aa-shadow-sm)] hover:bg-aa-surface-soft"><Plus size={17} /> Agregar vehículo</button></div>
-
-            <div className="mt-8 grid gap-5 xl:grid-cols-[1.45fr_1fr]">
-              <SurfaceCard className="overflow-hidden bg-aa-navy-950 p-6 text-white sm:p-8"><div className="flex items-start justify-between"><div><span className="inline-flex items-center gap-2 rounded-full bg-aa-blue-500/20 px-3 py-1 text-xs font-semibold text-aa-cyan-400"><CarFront size={14} /> Vehículo principal</span><h3 className="mt-5 font-display text-2xl font-bold">Mazda CX-5 2022</h3><p className="mt-1 text-sm text-white/60">Placas: ABC-123-D · CDMX</p></div><button type="button" aria-label="Más opciones" className="text-white/60 hover:text-white"><MoreHorizontal size={22} /></button></div><div className="relative mx-auto mt-3 h-44 max-w-[400px] sm:h-52"><Image src="/assets/hero/car-sedan.png" alt="Mazda CX-5" fill priority sizes="(max-width: 640px) 100vw, 400px" className="object-contain drop-shadow-[0_20px_24px_rgba(0,0,0,0.35)]" /></div><div className="mt-2 grid grid-cols-3 gap-3 border-t border-white/10 pt-5"><div><p className="text-xs text-white/50">Kilometraje</p><p className="mt-1 text-sm font-bold">32,480 km</p></div><div><p className="text-xs text-white/50">Próximo servicio</p><p className="mt-1 text-sm font-bold">2,520 km</p></div><div><p className="text-xs text-white/50">Estado</p><p className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold text-aa-success-500"><span className="h-2 w-2 rounded-full bg-aa-success-500" /> Al día</p></div></div></SurfaceCard>
-
-              <SurfaceCard className="p-6 sm:p-8"><div className="flex items-start justify-between"><div><p className="text-sm font-semibold text-aa-text-muted">Tu póliza</p><h3 className="mt-2 font-display text-xl font-bold">Protección amplia</h3></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-aa-success-500/12 text-aa-success-500"><ShieldCheck size={21} /></div></div><div className="mt-7 rounded-2xl bg-aa-surface-soft p-4"><div className="flex items-center justify-between text-sm"><span className="text-aa-text-muted">Vigencia</span><span className="font-bold">Hasta 04 nov 2026</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-aa-border"><div className="h-full w-[74%] rounded-full bg-aa-success-500" /></div><p className="mt-2 text-xs text-aa-text-muted">Te avisaremos con anticipación</p></div><a href="#poliza" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-aa-blue-600 hover:underline">Ver detalle de póliza <ChevronRight size={16} /></a></SurfaceCard>
-            </div>
-
-            <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_1fr_1.1fr]">
-              <SurfaceCard className="p-6"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-aa-coral-500/10 text-aa-coral-500"><Bell size={20} /></div><div><p className="text-sm text-aa-text-muted">Recordatorios</p><p className="font-display text-xl font-bold">2 pendientes</p></div></div><div className="mt-6 space-y-4">{reminders.map((item) => <div key={item.title} className="flex items-center gap-3"><span className={`h-2.5 w-2.5 rounded-full ${item.color}`} /><div className="min-w-0"><p className="truncate text-sm font-semibold">{item.title}</p><p className="text-xs text-aa-text-muted">{item.date}</p></div></div>)}</div><a href="#recordatorios" className="mt-6 inline-flex items-center gap-1 text-sm font-bold text-aa-blue-600 hover:underline">Ver todos <ChevronRight size={15} /></a></SurfaceCard>
-              <SurfaceCard className="p-6"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-aa-blue-500/10 text-aa-blue-600"><Wrench size={20} /></div><div><p className="text-sm text-aa-text-muted">Mantenimiento</p><p className="font-display text-xl font-bold">Buen momento</p></div></div><p className="mt-6 text-sm leading-6 text-aa-text-muted">Tu próximo servicio se acerca. Mantén tu auto listo para el siguiente recorrido.</p><button type="button" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-aa-blue-600 hover:underline">Ver recomendaciones <ChevronRight size={15} /></button></SurfaceCard>
-              <SurfaceCard className="relative overflow-hidden bg-aa-coral-500 p-6 text-white"><Sparkles className="absolute -right-3 -top-3 h-24 w-24 text-white/15" /><p className="relative text-sm font-semibold text-white/75">¿Necesitas ayuda?</p><h3 className="relative mt-2 max-w-[220px] font-display text-xl font-bold leading-tight">Estamos contigo cuando lo necesites.</h3><button type="button" className="relative mt-6 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-aa-coral-600 hover:bg-white/90"><MessageCircle size={16} /> Solicitar asistencia</button></SurfaceCard>
-            </div>
-          </Container>
-        </section>
-      </div>
-    </main>
-  );
+  const [query, setQuery] = useState(""); const [filter, setFilter] = useState("Todos"); const [selected, setSelected] = useState("alejandro");
+  const filtered = useMemo(() => users.filter((user) => { const haystack = `${user.name} ${user.city} ${user.insurer} ${user.vehicle}`.toLowerCase(); const matchesQuery = haystack.includes(query.toLowerCase()); const matchesFilter = filter === "Todos" || (filter === "Vigentes" && user.status === "active") || (filter === "Por vencer" && user.status === "expiring") || (filter === "Con documentos" && user.docs === "Completo"); return matchesQuery && matchesFilter; }), [query, filter]);
+  return <main className="min-h-screen bg-aa-page text-aa-navy-950"><div className="flex min-h-screen"><aside className="hidden w-[246px] shrink-0 flex-col border-r border-aa-border bg-white px-6 py-8 lg:flex"><BrandLogo width={190} priority /><nav className="mt-12 space-y-1">{nav.map(({ label, icon: Icon }) => <a key={label} href={`#${label}`} className={`flex items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-semibold ${label === "Consola" ? "bg-blue-50 text-aa-blue-600" : "text-aa-navy-900 hover:bg-aa-surface-soft"}`}><Icon size={20} />{label}</a>)}</nav><div className="mt-auto rounded-2xl border border-aa-border bg-aa-surface-soft p-4"><p className="font-display text-sm font-bold">Tu camino, siempre acompañado</p><div className="mt-4 h-1 w-16 rounded-full bg-gradient-to-r from-aa-cyan-400 via-aa-blue-600 to-aa-coral-500" /></div></aside><section className="min-w-0 flex-1"><header className="flex h-[78px] items-center justify-between border-b border-aa-border bg-white px-5 sm:px-8 lg:justify-end lg:px-12"><div className="flex items-center gap-3 lg:hidden"><button type="button" aria-label="Abrir menú" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-aa-surface-soft"><MoreVertical size={20} /></button><BrandLogo width={145} /></div><div className="flex items-center gap-5"><button type="button" aria-label="Notificaciones" className="relative flex h-10 w-10 items-center justify-center rounded-full text-aa-navy-900 hover:bg-aa-surface-soft"><Bell size={21} /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-aa-coral-500" /></button><div className="hidden items-center gap-3 sm:flex"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-aa-navy-950 text-xs font-bold text-white">AT</div><div><p className="text-sm font-bold">Andrea Torres</p><p className="text-xs text-aa-text-muted">Admin</p></div></div></div></header><Container className="py-8 sm:py-10 lg:py-12"><p className="text-sm text-aa-text-muted">Consola <span className="mx-2">/</span> Sandbox</p><h1 className="mt-4 font-display text-4xl font-bold tracking-[-0.05em] sm:text-5xl">Usuarios sandbox</h1><p className="mt-2 text-lg text-aa-text-muted">Selecciona el perfil que responderá en WhatsApp.</p><div className="mt-8 flex gap-4 overflow-x-auto pb-1">{[["Usuarios activos","5","+2"],["Pólizas vigentes","12","+3"],["Chats activos","28","+6"],["Por vencer","3","+1"]].map(([title,value,change]) => <div key={title} className="min-w-[190px] flex-1 rounded-2xl border border-aa-border bg-white p-5 shadow-[var(--aa-shadow-sm)]"><p className="text-sm text-aa-text-muted">{title}</p><div className="mt-2 flex items-end gap-3"><strong className="font-display text-3xl">{value}</strong><span className="mb-1 text-sm font-bold text-aa-success-500">↑ {change}</span></div></div>)}</div><div className="mt-8 flex flex-col gap-4 lg:flex-row"><label className="relative flex-1"><Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-aa-text-muted" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar por nombre, ciudad o póliza..." className="h-13 w-full rounded-2xl border border-transparent bg-blue-50/70 pl-12 pr-10 text-sm outline-none focus:border-aa-blue-500 focus:ring-4 focus:ring-aa-blue-500/10" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Limpiar búsqueda" className="absolute right-3 top-1/2 -translate-y-1/2"><X size={17} /></button>}</label><div className="flex gap-2 overflow-x-auto pb-1">{["Todos","Vigentes","Por vencer","Con documentos"].map((item) => <button type="button" key={item} onClick={() => setFilter(item)} className={`min-h-12 shrink-0 rounded-full border px-5 text-sm font-semibold transition ${filter === item ? "border-aa-blue-500 bg-blue-50 text-aa-blue-600" : "border-aa-border bg-white text-aa-navy-900 hover:bg-aa-surface-soft"}`}>{item}</button>)}</div></div><div className="mt-8 hidden overflow-hidden rounded-3xl border border-aa-border bg-white shadow-[var(--aa-shadow-sm)] lg:block"><div className="flex items-center border-b border-aa-border px-5 py-4 text-[11px] font-bold uppercase tracking-[0.08em] text-aa-text-muted"><span className="basis-[19%]">Usuario</span><span className="basis-[19%]">Vehículo</span><span className="basis-[16%]">Aseguradora</span><span className="basis-[12%]">Vigencia</span><span className="basis-[12%]">WhatsApp</span><span className="basis-[10%]">Docs</span><span className="basis-[8%]">Estatus</span><span className="basis-[4%]"> </span></div>{filtered.map((user) => <DesktopRow key={user.id} user={user} selected={selected === user.id} onSelect={() => setSelected(user.id)} />)}<Footer selected={selected} /> </div><div className="mt-8 space-y-3 lg:hidden">{filtered.map((user) => <MobileCard key={user.id} user={user} selected={selected === user.id} onSelect={() => setSelected(user.id)} />)}<Footer selected={selected} /></div></Container></section></div></main>;
 }
+function DesktopRow({ user, selected, onSelect }: { user: User; selected: boolean; onSelect: () => void }) { return <div className={`flex items-center border-b border-aa-border px-5 py-4 text-sm ${selected ? "bg-blue-50/70" : "bg-white"}`}><div className="flex basis-[19%] items-center gap-3"><span className={`flex h-10 w-10 items-center justify-center rounded-full text-xs font-bold ${user.tone}`}>{user.initials}</span><span><strong className="block">{user.name}</strong><small className="text-aa-text-muted">{user.city}</small></span></div><div className="basis-[19%]"><strong className="block">{user.vehicle}</strong><small className="text-aa-text-muted">{user.plate}</small></div><span className="basis-[16%]">{user.insurer}</span><span className="basis-[12%]">{user.expires}</span><span className="basis-[12%] font-semibold text-aa-success-500">● Activo</span><span className="basis-[10%]"><span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-aa-blue-600">▣ {user.docs}</span></span><span className="basis-[8%]"><span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${user.status === "active" ? "bg-emerald-50 text-aa-success-500" : "bg-orange-50 text-orange-600"}`}>● {user.status === "active" ? "Vigente" : "Por vencer"}</span></span><button type="button" aria-label={`Seleccionar ${user.name}`} onClick={onSelect} className={`ml-auto flex h-6 w-6 items-center justify-center rounded-full border-2 ${selected ? "border-aa-blue-600" : "border-aa-gray-400"}`}>{selected && <span className="h-3 w-3 rounded-full bg-aa-blue-600" />}</button></div>; }
+function MobileCard({ user, selected, onSelect }: { user: User; selected: boolean; onSelect: () => void }) { return <button type="button" onClick={onSelect} className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left ${selected ? "border-aa-blue-500 bg-blue-50/70" : "border-aa-border bg-white"}`}><span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-bold ${user.tone}`}>{user.initials}</span><span className="min-w-0 flex-1"><strong className="block text-base">{user.name}</strong><span className="mt-1 block truncate text-sm text-aa-text-muted">{user.insurer} · {user.vehicle}</span></span><span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${selected ? "border-aa-blue-600" : "border-aa-gray-400"}`}>{selected && <span className="h-3.5 w-3.5 rounded-full bg-aa-blue-600" />}</span></button>; }
+function Footer({ selected }: { selected: string }) { return <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm text-aa-text-muted">1 usuario seleccionado · sandbox activo</p><Button type="button" withArrow className="sm:min-w-[220px]">Guardar selección</Button></div>; }
