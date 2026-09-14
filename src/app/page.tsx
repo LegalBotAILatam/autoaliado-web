@@ -1,5 +1,5 @@
 import { FeatureStrip } from "@/components/home/FeatureStrip";
-import { LeadCapture } from "@/components/home/LeadCapture";
+import { SignupFlow } from "@/components/signup/SignupFlow";
 import { Hero } from "@/components/home/Hero";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
@@ -9,7 +9,7 @@ export default function Home() {
       <SiteHeader />
       <main>
       <Hero />
-      <LeadCapture />
+      <SignupFlow embedded />
       <FeatureStrip />
       </main>
     </div>
