@@ -15,7 +15,7 @@ export function Hero() {
       <Container className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8 xl:gap-12">
         <div className="flex w-full flex-col items-start lg:w-[44%] lg:pb-10">
           <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.28em] text-aa-blue-600 sm:text-xs">
-            Más que seguros, un aliado en tu camino
+            Un aliado en tu camino
           </p>
           <h1 className="max-w-[680px] font-display text-[clamp(3.1rem,7vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.055em] text-aa-navy-950">
             Tu auto siempre tiene un <span className="text-aa-coral-500">aliado.</span>
