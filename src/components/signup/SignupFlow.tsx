@@ -15,6 +15,11 @@ const steps = [
   { id: 4 as Step, title: "Documentos", copy: "Carga tu póliza y documentos." },
 ];
 
+function normaliseE164(value: string): string {
+  const trimmed = value.trim().replace(/^whatsapp:/i, "");
+  return trimmed.startsWith("+") ? `+${trimmed.slice(1).replace(/\D/g, "")}` : trimmed;
+}
+
 export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boolean; sandboxUserId?: string }) {
   const [activeStep, setActiveStep] = useState<Step>(1);
   const [createdUserId, setCreatedUserId] = useState<string | null>(null);
@@ -36,12 +41,16 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
     setSaveMessage("");
     try {
       let userId = sandboxUserId ?? createdUserId;
+      const normalizedPhone = phoneE164.trim() ? normaliseE164(phoneE164) : "";
+      if (phoneE164.trim() && !/^\+[1-9]\d{1,14}$/.test(normalizedPhone)) throw new Error("El WhatsApp debe estar en formato E.164, por ejemplo +525540106157.");
+      let phoneWarning = "";
       if (!userId) {
         if (!fullName.trim()) throw new Error("Escribe el nombre del usuario antes de guardar.");
-        const userResponse = await fetch("/api/sandbox/users", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ user: { name: fullName.trim(), ...(phoneE164.trim() ? { phoneE164: phoneE164.trim() } : {}) }, externalUserId: phoneE164.trim() || undefined, channelConnectionId: "kapso-whatsapp-sandbox" }) });
+        const userResponse = await fetch("/api/sandbox/users", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ user: { name: fullName.trim(), ...(normalizedPhone ? { phoneE164: normalizedPhone } : {}) }, externalUserId: normalizedPhone || undefined, channelConnectionId: "kapso-whatsapp-sandbox" }) });
         if (!userResponse.ok) throw new Error("No se pudo crear el usuario sandbox.");
-        const created = await userResponse.json() as { userId?: string };
+        const created = await userResponse.json() as { userId?: string; phone?: { enabledInKapso?: boolean | null; warning?: string } };
         if (!created.userId) throw new Error("La respuesta no incluyó el identificador sandbox.");
+        phoneWarning = created.phone?.warning ?? "";
         userId = created.userId;
         setCreatedUserId(userId);
       }
@@ -83,7 +92,7 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
       }
       if (!uploaded) throw new Error("Agrega al menos un archivo real antes de guardar.");
       setSaveState("saved");
-      setSaveMessage(extractionFailures ? "El usuario se creó, pero algunos documentos requieren reintento. Revisa el detalle en Consola." : "Usuario sandbox listo. La extracción terminó; revisa y confirma los campos en Consola.");
+      setSaveMessage(`${extractionFailures ? "El usuario se creó, pero algunos documentos requieren reintento. Revisa el detalle en Consola." : "Usuario sandbox listo. La extracción terminó; revisa y confirma los campos en Consola."}${phoneWarning ? ` ${phoneWarning}` : ""}`);
     } catch (error) {
       setSaveState("error");
       setSaveMessage(error instanceof Error ? error.message : "No se pudo guardar el alta.");
