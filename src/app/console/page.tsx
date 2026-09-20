@@ -32,29 +32,18 @@ function Footer({ rows, selected }: { rows: User[]; selected: string }) {
   const user = rows.find((item) => item.id === selected);
   const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [message, setMessage] = useState("");
-  const [phoneDraft, setPhoneDraft] = useState(user?.whatsappNumber ?? "");
-  function normalizePhone(value: string) { const digits = value.replace(/\D/g, ""); return digits ? `+${digits.startsWith("52") ? digits : `52${digits}`}` : ""; }
   async function save() {
     if (!user) { setState("error"); setMessage("Selecciona un usuario válido antes de guardar."); return; }
-    const phoneE164 = normalizePhone(phoneDraft);
-    if (!/^\+[1-9]\d{1,14}$/.test(phoneE164)) { setState("error"); setMessage("Captura un WhatsApp válido en formato E.164."); return; }
     setState("saving"); setMessage("");
     try {
-      const phoneResponse = await fetch(`/api/sandbox/users/${encodeURIComponent(user.id)}/phone`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ channelConnectionId: "kapso-whatsapp-sandbox", phoneE164 }) });
-      const phonePayload = await phoneResponse.json().catch(() => ({})) as { error?: string };
-      if (!phoneResponse.ok) throw new Error(phonePayload.error ?? "No se pudo guardar el WhatsApp del perfil.");
       const response = await fetch("/api/sandbox/selection", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ channelConnectionId: "kapso-whatsapp-sandbox", userId: user.id, updatedBy: "autoaliado-console" }) });
       const payload = await response.json().catch(() => ({})) as { selection?: { selectedUserId?: string }; error?: string };
       if (!response.ok) throw new Error(payload.error ?? "No se pudo guardar la selección.");
       if (payload.selection?.selectedUserId !== user.id) throw new Error("El backend no confirmó el usuario seleccionado.");
-      setPhoneDraft(phoneE164); setState("saved"); setMessage(`Perfil y selección guardados. Kapso responderá con ${user.name}.`);
+      setState("saved"); setMessage(`Perfil y selección guardados. Kapso responderá con ${user.name}.`);
     } catch (error) { setState("error"); setMessage(error instanceof Error ? error.message : "No se pudo guardar la selección."); }
   }
   return <div className="flex flex-col gap-4 border-t border-aa-border px-5 py-5">
-    <div className="grid gap-3 rounded-2xl bg-aa-surface-soft p-4 text-sm sm:grid-cols-2">
-      <label className="font-semibold text-aa-navy-900">WhatsApp del perfil seleccionado<input value={phoneDraft} onChange={(event) => setPhoneDraft(event.target.value)} placeholder="+52 55 0000 0000" autoComplete="off" inputMode="tel" className="mt-2 h-11 w-full rounded-xl border border-aa-border bg-white px-3 font-normal outline-none focus:border-aa-blue-500" /></label>
-      <div><p className="font-semibold text-aa-navy-900">Remitente activo de Kapso</p><p className="mt-2 rounded-xl border border-aa-border bg-white px-3 py-2 font-mono text-sm">+52 55 4010 6157</p><p className="mt-1 text-xs text-aa-text-muted">El sandbox valida este remitente y usa la selección global de consola.</p></div>
-    </div>
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-aa-navy-900">1 usuario seleccionado · conexión kapso-whatsapp-sandbox</p>{message && <p role="status" aria-live="polite" className={`mt-1 text-xs font-semibold ${state === "error" ? "text-aa-coral-500" : "text-aa-success-500"}`}>{message}</p>}</div><Button type="button" withArrow className="min-h-14 bg-aa-blue-600 px-7 text-base font-bold text-white shadow-[var(--aa-shadow-md)] hover:bg-aa-blue-700 sm:min-w-[240px]" onClick={() => void save()} disabled={state === "saving"}>{state === "saving" ? "Guardando…" : state === "saved" ? "Selección guardada" : "Guardar selección"}</Button></div>
   </div>;
 }
