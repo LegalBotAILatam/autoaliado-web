@@ -21,6 +21,10 @@ function normaliseE164(value: string): string {
   return trimmed.startsWith("+") ? `+${trimmed.slice(1).replace(/\D/g, "")}` : trimmed;
 }
 
+function normalizePostalValue(value: string): string {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim().toLocaleLowerCase("es-MX");
+}
+
 export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boolean; sandboxUserId?: string }) {
   const [activeStep, setActiveStep] = useState<Step>(1);
   const [createdUserId, setCreatedUserId] = useState<string | null>(null);
@@ -74,7 +78,9 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
       const normalizedPhone = phoneE164.trim() ? normaliseE164(phoneE164) : "";
       if (phoneE164.trim() && !/^\+[1-9]\d{1,14}$/.test(normalizedPhone)) throw new Error("El WhatsApp debe estar en formato E.164, por ejemplo +525540106157.");
       if (postalLookup === "found" && postalReference) {
-        const coherent = address.state === postalReference.state && [postalReference.municipality, postalReference.city].filter(Boolean).includes(address.city) && postalReference.colonies.includes(address.neighborhood);
+        const coherent = normalizePostalValue(address.state) === normalizePostalValue(postalReference.state)
+          && [postalReference.municipality, postalReference.city].filter(Boolean).some((value) => normalizePostalValue(value) === normalizePostalValue(address.city))
+          && postalReference.colonies.some((value) => normalizePostalValue(value) === normalizePostalValue(address.neighborhood));
         if (!coherent) throw new Error("Revisa estado, municipio y colonia: deben coincidir con el código postal seleccionado.");
       }
       let phoneWarning = "";
