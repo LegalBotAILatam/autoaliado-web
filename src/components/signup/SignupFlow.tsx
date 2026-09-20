@@ -31,7 +31,7 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
   const [phoneE164, setPhoneE164] = useState("");
   const [address, setAddress] = useState<Address>({ street: "", exteriorNumber: "", interiorNumber: "", neighborhood: "", city: "", state: "", postalCode: "", country: "México" });
   const [postalColonies, setPostalColonies] = useState<string[]>([]);
-  const [postalReference, setPostalReference] = useState<{ state: string; city: string; colonies: string[] } | null>(null);
+  const [postalReference, setPostalReference] = useState<{ state: string; municipality: string; city: string; colonies: string[] } | null>(null);
   const [postalLookup, setPostalLookup] = useState<"idle" | "loading" | "found" | "manual">("idle");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string>("");
@@ -57,11 +57,12 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
       if (!response.ok) throw new Error("postal_not_found");
       const result = await response.json() as { state?: string | null; municipality?: string | null; city?: string | null; colonies?: string[] };
       setPostalColonies(result.colonies ?? []);
-      const resolvedCity = result.city ?? result.municipality ?? "";
+      const resolvedMunicipality = result.municipality ?? "";
+      const resolvedCity = result.city ?? resolvedMunicipality;
       const resolvedState = result.state ?? "";
       const resolvedColonies = result.colonies ?? [];
-      setPostalReference({ state: resolvedState, city: resolvedCity, colonies: resolvedColonies });
-      setAddress((current) => ({ ...current, state: resolvedState, city: resolvedCity, neighborhood: resolvedColonies.length === 1 ? resolvedColonies[0] : "" }));
+      setPostalReference({ state: resolvedState, municipality: resolvedMunicipality, city: resolvedCity, colonies: resolvedColonies });
+      setAddress((current) => ({ ...current, state: resolvedState, city: resolvedMunicipality || resolvedCity, neighborhood: resolvedColonies.length === 1 ? resolvedColonies[0] : "" }));
       setPostalLookup("found");
     } catch { setPostalLookup("manual"); setPostalReference(null); }
   }
@@ -73,7 +74,7 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
       const normalizedPhone = phoneE164.trim() ? normaliseE164(phoneE164) : "";
       if (phoneE164.trim() && !/^\+[1-9]\d{1,14}$/.test(normalizedPhone)) throw new Error("El WhatsApp debe estar en formato E.164, por ejemplo +525540106157.");
       if (postalLookup === "found" && postalReference) {
-        const coherent = address.state === postalReference.state && address.city === postalReference.city && postalReference.colonies.includes(address.neighborhood);
+        const coherent = address.state === postalReference.state && [postalReference.municipality, postalReference.city].filter(Boolean).includes(address.city) && postalReference.colonies.includes(address.neighborhood);
         if (!coherent) throw new Error("Revisa estado, municipio y colonia: deben coincidir con el código postal seleccionado.");
       }
       let phoneWarning = "";
@@ -81,7 +82,10 @@ export function SignupFlow({ embedded = false, sandboxUserId }: { embedded?: boo
         const composedName = [fullName, middleName, firstSurname, secondSurname].map((part) => part.trim()).filter(Boolean).join(" ");
         if (!fullName.trim() || !firstSurname.trim()) throw new Error("Escribe el primer nombre y el primer apellido antes de guardar.");
         const userResponse = await fetch("/api/sandbox/users", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ user: { name: composedName, ...(normalizedPhone ? { phoneE164: normalizedPhone } : {}) }, address, externalUserId: normalizedPhone || undefined, channelConnectionId: "kapso-whatsapp-sandbox" }) });
-        if (!userResponse.ok) throw new Error("No se pudo crear el usuario sandbox.");
+        if (!userResponse.ok) {
+          const errorBody = await userResponse.json().catch(() => ({})) as { message?: string };
+          throw new Error(errorBody.message ?? "No se pudo crear el usuario sandbox.");
+        }
         const created = await userResponse.json() as { userId?: string; phone?: { enabledInKapso?: boolean | null; warning?: string } };
         if (!created.userId) throw new Error("La respuesta no incluyó el identificador sandbox.");
         phoneWarning = created.phone?.warning ?? "";
